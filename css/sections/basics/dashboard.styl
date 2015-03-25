@@ -1,0 +1,63 @@
+/* ==== dashboard ==== */
+$clrBackground = #333
+$clrLetter = #fff
+$heightHeader = 40px
+header
+  background $clrBackground
+  display block
+  height $heightHeader
+  position relative
+  width 100%
+  .menu_header
+    padding 0 10px
+    position absolute
+    right 0px
+    top 0px
+    text-align right
+    width 40%
+  .title
+    color $clrLetter
+    direction ltr
+    font-size 1.2rem
+    height $heightHeader
+    line-height $heightHeader
+    padding-left 10px
+    width 40%
+  li
+    color $clrLetter
+    display inline-block
+    transition background 0.4s ease-in-out
+    &:hover
+      background darken($clrBackground, 90)
+  a
+    color $clrLetter
+    height $heightHeader
+    line-height $heightHeader
+    padding 0 20px
+section
+  height 100%
+  .options_container
+    background lighten($clrBackground, 40)
+    display inline-block
+    height 100%
+    padding-top 20px
+    width 20%
+    li
+      color $clrLetter
+      transition background 0.4s ease-in-out
+      padding 0
+      &:hover
+        background lighten($clrBackground, 20)
+      a
+        color $clrLetter
+        height $heightHeader
+        line-height $heightHeader
+        padding 0 20px
+        margin 0
+  .main_menu
+    display inline
+    float right
+    height 100%
+    width 80%
+    padding 0px 15px
+    overflow auto

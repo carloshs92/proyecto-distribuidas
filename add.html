@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Sistemas Distribuidos</title>
+    <link rel="stylesheet" href="css/ui-darkness/jquery-ui-1.9.2.custom.css">
+    <link rel="stylesheet" href="css/final.css">
+    <link href="http://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <header>
+      <div class="title">Municipalidad de Chorrillos</div>
+      <div class="menu_header">
+        <ul>
+          <li> <a href="javascript:;">Bienvenido Sr Rodriguez</a></li>
+          <li> <a href="index.html">Cerrar Sesion</a></li>
+        </ul>
+      </div>
+    </header>
+    <section>
+      <div class="options_container">
+        <ul>
+          <li> <a href="add.html">Registrar Nuevo Registro</a></li>
+          <li> <a href="lists.html">Consultar de Registro</a></li>
+          <li> <a href="aprobe.html">Aprobar Registro</a></li>
+        </ul>
+      </div>
+      <div class="main_menu">
+        <h1>Registro</h1>
+        <p>Este es el registro de shit</p>
+        <form class="form_type1">
+          <section class="form_section">
+            <div class="form_group">
+              <div class="form_item">
+                <fieldset class="form_button">
+                  <label>DNI</label>
+                  <input type="text" placeholder="Ingrese su DNI"><a href="javascript:;" id="searchDNI" data-style="slide-down" class="btn btn-search ladda-button"><i class="icon_search"></i></a>
+                </fieldset>
+              </div>
+              <div readonly="readonly" class="form_item">
+                <fieldset>
+                  <label>NOMBRE</label>
+                  <input type="text" placeholder="Ingrese su Nombre" readonly>
+                </fieldset>
+              </div>
+              <div readonly="readonly" class="form_item">
+                <fieldset>
+                  <label>APELLIDO</label>
+                  <input type="text" placeholder="Ingrese su Apellido" readonly>
+                </fieldset>
+              </div>
+              <div readonly="readonly" class="form_item">
+                <fieldset>
+                  <label>DIRECCION</label>
+                  <input type="text" placeholder="Ingrese su Dirección" readonly>
+                </fieldset>
+              </div>
+              <div readonly="readonly" class="form_item">
+                <fieldset>
+                  <label>FEC. NACIMIENTO</label>
+                  <input type="text" placeholder="Ingrese su Fecha Nacimiento" readonly>
+                </fieldset>
+              </div>
+            </div>
+            <div class="form_group">
+              <div class="form_item">
+                <fieldset class="form_button">
+                  <label>RUC</label>
+                  <input type="text" placeholder="Ingrese su RUC"><a href="javascript:;" id="searchRUC" data-style="slide-down" class="btn btn-search ladda-button"><i class="icon_search"></i></a>
+                </fieldset>
+              </div>
+              <div readonly="readonly" class="form_item">
+                <fieldset>
+                  <label>RAZON SOCIAL</label>
+                  <input type="text" placeholder="Ingrese su Razón Social" readonly>
+                </fieldset>
+              </div>
+              <div class="form_item">
+                <fieldset>
+                  <label>Maquinaria Pesada </label>
+                  <select id="heavyMachinery">
+                    <option>Tractor 1</option>
+                    <option>Tractor 2</option>
+                    <option>Tractor 3</option>
+                    <option>Tractor 4</option>
+                  </select>
+                </fieldset>
+              </div>
+              <div class="form_item">
+                <fieldset>
+                  <label>FECHA INICIAL</label>
+                  <input type="text" id="toDate" placeholder="Ingrese su Razón Social">
+                </fieldset>
+              </div>
+              <div class="form_item">
+                <fieldset>
+                  <label>FECHA FINAL</label>
+                  <input type="text" id="fromDate" placeholder="Ingrese su Razón Social">
+                </fieldset>
+              </div>
+            </div>
+          </section>
+          <section class="form_section">
+            <div class="form_group"></div>
+          </section>
+          <div id="calendar"></div>
+        </form>
+      </div>
+    </section>
+    <script src="libs/jquery.min.js"></script>
+    <script src="libs/jquery-ui-1.9.2.custom.js"></script>
+    <script src="libs/moment.min.js"></script>
+    <script src="libs/fullcalendar.js"></script>
+    <script src="libs/lang-all.js"></script>
+    <script src="libs/spin.min.js"></script>
+    <script src="libs/ladda.js"></script>
+    <script src="libs/ladda.jquery.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
