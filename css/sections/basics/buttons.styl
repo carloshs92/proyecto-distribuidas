@@ -16,18 +16,31 @@ $clrGreen = #2ACA76
         background darken($clrBlue1, 10)
 .form_button
   .btn
-    height 30px
-    width 30px
     display inline-block
     float right
-  .btn-search i
     height 30px
-    width 30px
-    background url('/img/search.png') no-repeat center $clrGreen
+    line-height 30px
+    padding 0 10px
+    text-align center 
     transition background 0.3s ease-in-out
-    display inline-block
-    &:hover
-      background url('/img/search.png') no-repeat center darken($clrGreen, 10)
+    &.btn-search
+      background $clrGreen
+      padding 0
+      width 30px
+      &:hover
+        background darken($clrGreen, 10)
+      i
+        background url('../img/search.png') no-repeat center $clrGreen
+        height 30px
+        width 30px
+        display inline-block
+    &.btn-save
+      background $clrBlue1
+      font-size 1.15rem
+      height 40px
+      line-height 40px
+      &:hover
+        background darken($clrBlue1, 10)
 .form_button  
   .btn
     position relative

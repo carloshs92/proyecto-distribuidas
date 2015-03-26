@@ -45,21 +45,23 @@
 			dom.toDate.datepicker(
 				changeMonth: true
 				changeYear: true
+				dateFormat: 'dd-mm-yy'
 				maxDate: "+2Y"
 				minDate: 0
 				numberOfMonths: 3
 				onClose: (selectedDate )->
-					dom.fromDate.datepicker( "option", "maxDate", selectedDate )
+					dom.fromDate.datepicker( "option", "minDate", selectedDate )
 					return
 				)
 			dom.fromDate.datepicker(
 				changeMonth: true
 				changeYear: true
+				dateFormat: 'dd-mm-yy'
 				maxDate: "+2Y"
 				minDate: 0
 				numberOfMonths: 3
 				onClose: (selectedDate )->
-					dom.toDate.datepicker( "option", "minDate", selectedDate )
+					dom.toDate.datepicker( "option", "maxDate", selectedDate )
 					return
 				)
 			return

@@ -2,7 +2,7 @@ extends ./dashboard.jade
 
 block content
 	h1 Registro
-	p Este es el registro de shit
+	p Ingrese la información del solicitante
 	form.form_type1
 		section.form_section
 			.form_group
@@ -24,10 +24,14 @@ block content
 					fieldset
 						label DIRECCION
 						input(type="text", placeholder="Ingrese su Dirección", readonly)
-				.form_item(readonly="readonly")
+				.form_item
 					fieldset
-						label FEC. NACIMIENTO
-						input(type="text", placeholder="Ingrese su Fecha Nacimiento", readonly)
+						label Maquinaria Pesada 
+						select#heavyMachinery
+							option Tractor 1
+							option Tractor 2
+							option Tractor 3
+							option Tractor 4
 			.form_group
 				.form_item
 					fieldset.form_button
@@ -41,21 +45,20 @@ block content
 						input(type="text", placeholder="Ingrese su Razón Social", readonly)
 				.form_item
 					fieldset
-						label Maquinaria Pesada 
-						select#heavyMachinery
-							option Tractor 1
-							option Tractor 2
-							option Tractor 3
-							option Tractor 4
-				.form_item
-					fieldset
 						label FECHA INICIAL
 						input(type="text", id="toDate", placeholder="Ingrese su Razón Social")
 				.form_item
 					fieldset
 						label FECHA FINAL
 						input(type="text", id="fromDate", placeholder="Ingrese su Razón Social")
+				.form_item(readonly="readonly")
+					fieldset
+						label COTIZACION
+						input(type="text", placeholder="Cotización", readonly)
+
 		section.form_section
-			.form_group
-				
-		#calendar
+			#calendar
+		
+		section.form_section
+			.form_button
+				a(href="javascript:;", class="btn btn-save ladda-button", data-style="slide-down")	Guardar Solicitud
