@@ -5,7 +5,18 @@
       var afterCatchDom, catchDom, dom, init, st;
       dom = {};
       st = {
-        container: '#calendar'
+        container: '#calendar',
+        events: [
+          {
+            title: 'Event1',
+            start: '2015-03-30',
+            end: '2015-04-15'
+          }, {
+            title: 'Event2',
+            start: '2015-05-01',
+            end: '2015-05-15'
+          }
+        ]
       };
       catchDom = function() {
         dom.container = $(st.container);
@@ -13,7 +24,14 @@
       afterCatchDom = function() {
         dom.container.fullCalendar({
           lang: 'es',
-          defaultView: 'month'
+          defaultView: 'month',
+          eventSources: [
+            {
+              events: st.events,
+              color: '#26A2E0',
+              textColor: 'white'
+            }
+          ]
         });
       };
       init = function() {

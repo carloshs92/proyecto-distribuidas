@@ -24,14 +24,6 @@ block content
 					fieldset
 						label DIRECCION
 						input(type="text", placeholder="Ingrese su Dirección", readonly)
-				.form_item
-					fieldset
-						label Maquinaria Pesada 
-						select#heavyMachinery
-							option Tractor 1
-							option Tractor 2
-							option Tractor 3
-							option Tractor 4
 			.form_group
 				.form_item
 					fieldset.form_button
@@ -43,6 +35,21 @@ block content
 					fieldset
 						label RAZON SOCIAL
 						input(type="text", placeholder="Ingrese su Razón Social", readonly)
+		section.form_section
+			.form_group
+				.form_item
+					fieldset
+						label Maquinaria Pesada 
+						select#heavyMachinery
+							option Tractor 1
+							option Tractor 2
+							option Tractor 3
+							option Tractor 4
+				.form_item(readonly="readonly")
+					fieldset
+						label COTIZACION
+						input(type="text", placeholder="Cotización", readonly)
+			.form_group
 				.form_item
 					fieldset
 						label FECHA INICIAL
@@ -51,14 +58,23 @@ block content
 					fieldset
 						label FECHA FINAL
 						input(type="text", id="fromDate", placeholder="Ingrese su Razón Social")
-				.form_item(readonly="readonly")
-					fieldset
-						label COTIZACION
-						input(type="text", placeholder="Cotización", readonly)
-
+		section.form_section
+			.form_button
+				a(href="javascript:;", class="btn btn-add ladda-button left", data-style="slide-down") Agregar +
+			.heavyMachineryItems
+				.heavyMachinerySelected
+					.heavyMachineryName Maquinaria 1
+					.heavyMachineryDate 02/16/2015 - 02/20/2015
+					.heavyMachineryDelete X
+				.heavyMachinerySelected
+					.heavyMachineryName Maquinaria 2
+					.heavyMachineryDate 02/16/2015 - 02/20/2015
+					.heavyMachineryDelete X
 		section.form_section
 			#calendar
 		
 		section.form_section
+			label.finalPriceBox
+				| Precio Final S/. <span id="finalPrice">0.00</span>
 			.form_button
 				a(href="javascript:;", class="btn btn-save ladda-button", data-style="slide-down")	Guardar Solicitud

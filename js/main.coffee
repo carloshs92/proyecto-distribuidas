@@ -3,6 +3,18 @@
 		dom = {}
 		st =
 			container : '#calendar'
+			events : [
+				{
+					title: 'Event1'
+					start: '2015-03-30'
+					end: '2015-04-15'
+				},
+				{
+					title: 'Event2'
+					start: '2015-05-01'
+					end: '2015-05-15'
+				},
+			]
 		catchDom = ->
 			dom.container = $(st.container)
 			return
@@ -10,6 +22,11 @@
 			dom.container.fullCalendar
 				lang: 'es'
 				defaultView: 'month'
+				eventSources: [
+					events	 : st.events
+					color	 : '#26A2E0'
+					textColor:'white'
+				]
 			return
 		init = ->
 			catchDom()

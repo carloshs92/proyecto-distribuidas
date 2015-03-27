@@ -248,6 +248,18 @@ a {
 .form_button .btn.btn-save:hover {
   background: #26a2e0;
 }
+.form_button .btn.btn-add {
+  background: #159049;
+  font-size: 1.1rem;
+  height: 35px;
+  line-height: 35px;
+}
+.form_button .btn.btn-add:hover {
+  background: #0f6332;
+}
+.form_button .btn.left {
+  float: left;
+}
 .form_button .btn {
   position: relative;
   background: #666;
@@ -707,6 +719,53 @@ section .main_menu {
   padding: 0px 15px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+.heavyMachineryItems {
+  display: inline-block;
+  margin-top: 15px;
+  width: 100%;
+}
+.heavyMachinerySelected {
+  background: #f2f2f2;
+  border: 1px solid #b2b2b2;
+  display: inline-block;
+  margin-top: -1px;
+  padding: 7px 8px;
+  line-height: 24px;
+  width: 100%;
+}
+.heavyMachineryName {
+  display: inline-block;
+  float: left;
+  font-weight: bold;
+  width: 40%;
+}
+.heavyMachineryDate {
+  display: inline-block;
+  width: 40%;
+}
+.heavyMachineryDelete {
+  background: #e32;
+  border-radius: 15px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  float: right;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  width: 25px;
+}
+.heavyMachineryDelete:hover {
+  background: #cd2010;
+  box-shadow: 0 0 5px 1px #e32;
+}
+.finalPriceBox {
+  display: inline-block;
+  font-size: 1.3rem;
+  margin-top: 10px;
+  width: 100%;
 }
 .form_type1 {
   font-size: 0.9em;
