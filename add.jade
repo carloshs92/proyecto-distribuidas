@@ -9,26 +9,26 @@ block content
 				.form_item
 					fieldset.form_button
 						label DNI
-						input(type="text", placeholder="Ingrese su DNI")
+						input(id="txtDNI", type="text", placeholder="Ingrese su DNI", maxlength="8")
 						a(href="javascript:;", class="btn btn-search ladda-button", id="searchDNI", data-style="slide-down")
 							i.icon_search
 				.form_item(readonly="readonly")
 					fieldset
 						label NOMBRE
-						input(type="text", placeholder="Ingrese su Nombre", readonly)
+						input(id="txtName", type="text", placeholder="Ingrese su Nombre", readonly)
 				.form_item(readonly="readonly")
 					fieldset
 						label APELLIDO
-						input(type="text", placeholder="Ingrese su Apellido", readonly)
+						input(id="txtLastName", type="text", placeholder="Ingrese su Apellido", readonly)
 				.form_item(readonly="readonly")
 					fieldset
 						label DIRECCION
-						input(type="text", placeholder="Ingrese su Dirección", readonly)
+						input(id="txtAddress", type="text", placeholder="Ingrese su Dirección", readonly)
 			.form_group
 				.form_item
 					fieldset.form_button
 						label RUC
-						input(type="text", placeholder="Ingrese su RUC")
+						input(type="text", placeholder="Ingrese su RUC", maxlength="11")
 						a(href="javascript:;", class="btn btn-search ladda-button", id="searchRUC", data-style="slide-down")
 							i.icon_search
 				.form_item(readonly="readonly")

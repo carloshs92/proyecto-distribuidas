@@ -98,11 +98,86 @@
 			dom.buttons = $(st.buttons)
 			return
 		afterCatchDom = ->
-			dom.buttons.ladda('bind', { timeout: 2000 })
+			dom.buttons.ladda('bind')
 			return
 		init = ->
 			catchDom()
 			afterCatchDom()
+			return
+		init()
+		return
+	fnInitTable = ->
+		dom = {}
+		st =
+			tables : '#tables'
+		catchDom = ->
+			dom.tables = $(st.tables)
+			return
+		afterCatchDom = ->
+			dom.tables.dataTable()
+			return
+		init = ->
+			catchDom()
+			afterCatchDom()
+			return
+		init()
+		return
+	fnSearchDNI = ->
+		dom = {}
+		st =
+			url 	: "http://marti1125.webfactional.com/reniec/index.php/verificar/"
+			dni 	: "48754156"
+			button 	: "#searchDNI"
+			txtDNI 		: "#txtDNI"
+			txtName 	: '#txtName'
+			txtLastName : '#txtLastName'
+			txtAddress 	: '#txtAddress'
+			currentValue: null
+		catchDom = ->
+			dom.button = $(st.button)
+			dom.txtDNI 		= $(st.txtDNI)
+			dom.txtName 	= $(st.txtName)
+			dom.txtLastName = $(st.txtLastName)
+			dom.txtAddress 	= $(st.txtAddress)
+			return
+		suscribeEvents = ->
+			dom.button.on 'click', events.eSearchDNI
+			dom.txtDNI.on 'change', events.eCleanForm
+			dom.txtDNI.on 'keyup', events.eCleanForm
+			return
+		events =
+			eSearchDNI : (e) ->
+				dni = $(@).val()
+				if dni == ""
+					$(@).val(st.dni)
+					dni = st.dni
+				st.currentValue = dni
+				$.ajax(
+					url 		: "#{st.url}#{dni}"
+					crossDomain : true
+					type		: "GET"
+					dataType 	: "json"
+				).done((data)->
+					obj = data[0]
+					dom.txtName.val(obj.nombre_completo)
+					dom.txtLastName.val(obj.nombre_completo)
+					dom.txtAddress.val(obj.direccion)
+					return
+				).always((data)->
+					dom.button.removeAttr('disabled')
+					dom.button.removeAttr('data-loading')
+					return
+				)
+				return
+			eCleanForm : (e)->
+				if $(@).val() != st.currentValue
+					dom.txtName.val('')
+					dom.txtLastName.val('')
+					dom.txtAddress.val('')
+				return
+		init = ->
+			catchDom()
+			suscribeEvents()
 			return
 		init()
 		return
@@ -111,5 +186,7 @@
 	fnRangeCalendar()
 	fnGetSchedule()
 	fnActiveCalendar()
+	fnInitTable()
+	fnSearchDNI()
 	return
 )()

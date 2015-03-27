@@ -14,3 +14,5 @@ Servicios a consumir
 * Filtrado por codigo de solicitudes
 * Consulta de Solicitud
 * Aprobación de Solicitud
+
+Para poder probar la app es necesario correrlo dentro de un servidor en una ruta como http://localhost:8000/
