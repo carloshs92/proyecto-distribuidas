@@ -802,6 +802,9 @@ section .main_menu {
   padding: 1px 1px 0px 1px;
   width: 100%;
 }
+.form_item label.error {
+  color: #cf3a3a;
+}
 .form_item input[type="text"] {
   border: 0px solid #fff;
   color: #666;

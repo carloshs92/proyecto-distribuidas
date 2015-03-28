@@ -1,6 +1,6 @@
 (function() {
   (function() {
-    var fnActiveCalendar, fnGetSchedule, fnInitTable, fnLoadingButtons, fnRangeCalendar, fnSearchDNI;
+    var fnActiveCalendar, fnGetSchedule, fnInitTable, fnLoadingButtons, fnRangeCalendar, fnSearchDNI, fnSearchRUC, fnValidate;
     fnActiveCalendar = function() {
       var afterCatchDom, catchDom, dom, init, st;
       dom = {};
@@ -159,9 +159,9 @@
       events = {
         eSearchDNI: function(e) {
           var dni;
-          dni = $(this).val();
+          dni = dom.txtDNI.val();
           if (dni === "") {
-            $(this).val(st.dni);
+            dom.txtDNI.val(st.dni);
             dni = st.dni;
           }
           st.currentValue = dni;
@@ -172,10 +172,14 @@
             dataType: "json"
           }).done(function(data) {
             var obj;
-            obj = data[0];
-            dom.txtName.val(obj.nombre_completo);
-            dom.txtLastName.val(obj.nombre_completo);
-            dom.txtAddress.val(obj.direccion);
+            if (data.length > 0) {
+              obj = data[0];
+              dom.txtName.val(obj.nombre_completo);
+              dom.txtLastName.val(obj.nombre_completo);
+              dom.txtAddress.val(obj.direccion);
+            } else {
+              alert('DNI no encontrado');
+            }
           }).always(function(data) {
             dom.button.removeAttr('disabled');
             dom.button.removeAttr('data-loading');
@@ -195,12 +199,109 @@
       };
       init();
     };
+    fnSearchRUC = function() {
+      var catchDom, dom, events, init, st, suscribeEvents;
+      dom = {};
+      st = {
+        url: "http://marti1125.webfactional.com/sunat/index.php/verificar/",
+        ruc: "20546462324",
+        button: "#searchRUC",
+        txtRUC: "#txtRUC",
+        txtCompanyName: '#txtCompanyName',
+        txtCompanyAddress: '#txtCompanyAddress',
+        currentValue: null
+      };
+      catchDom = function() {
+        dom.button = $(st.button);
+        dom.txtRUC = $(st.txtRUC);
+        dom.txtCompanyName = $(st.txtCompanyName);
+        dom.txtCompanyAddress = $(st.txtCompanyAddress);
+      };
+      suscribeEvents = function() {
+        dom.button.on('click', events.eSearchRUC);
+        dom.txtRUC.on('change', events.eCleanForm);
+        dom.txtRUC.on('keyup', events.eCleanForm);
+      };
+      events = {
+        eSearchRUC: function(e) {
+          var ruc;
+          ruc = dom.txtRUC.val();
+          if (ruc === "") {
+            dom.txtRUC.val(st.ruc);
+            ruc = st.ruc;
+          }
+          st.currentValue = ruc;
+          $.ajax({
+            url: "" + st.url + ruc,
+            crossDomain: true,
+            type: "GET",
+            dataType: "json"
+          }).done(function(data) {
+            var obj;
+            if (data.length > 0) {
+              obj = data[0];
+              dom.txtCompanyName.val(obj.nombre);
+              dom.txtCompanyAddress.val(obj.direccion);
+            } else {
+              alert('RUC no encontrado');
+            }
+          }).always(function(data) {
+            dom.button.removeAttr('disabled');
+            dom.button.removeAttr('data-loading');
+          });
+        },
+        eCleanForm: function(e) {
+          if ($(this).val() !== st.currentValue) {
+            dom.txtCompanyName.val('');
+            dom.txtCompanyAddress.val('');
+          }
+        }
+      };
+      init = function() {
+        catchDom();
+        suscribeEvents();
+      };
+      init();
+    };
+    fnValidate = function() {
+      var afterCatchDom, catchDom, dom, init, st;
+      dom = {};
+      st = {
+        form: '#form_register'
+      };
+      catchDom = function() {
+        dom.form = $(st.form);
+      };
+      afterCatchDom = function() {
+        dom.form.validate({
+          rules: {
+            txtDNI: {
+              minlength: 8,
+              number: true,
+              required: true
+            },
+            txtRUC: {
+              minlength: 11,
+              number: true,
+              required: true
+            }
+          }
+        });
+      };
+      init = function() {
+        catchDom();
+        afterCatchDom();
+      };
+      init();
+    };
     fnLoadingButtons();
     fnRangeCalendar();
     fnGetSchedule();
     fnActiveCalendar();
     fnInitTable();
     fnSearchDNI();
+    fnSearchRUC();
+    fnValidate();
   })();
 
 }).call(this);

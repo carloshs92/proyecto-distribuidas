@@ -3,38 +3,42 @@ extends ./dashboard.jade
 block content
 	h1 Registro
 	p Ingrese la información del solicitante
-	form.form_type1
+	form.form_type1#form_register
 		section.form_section
 			.form_group
 				.form_item
 					fieldset.form_button
 						label DNI
-						input(id="txtDNI", type="text", placeholder="Ingrese su DNI", maxlength="8")
 						a(href="javascript:;", class="btn btn-search ladda-button", id="searchDNI", data-style="slide-down")
 							i.icon_search
+						input(id="txtDNI", name="txtDNI", type="text", placeholder="Ingrese su DNI", maxlength="8")
 				.form_item(readonly="readonly")
 					fieldset
 						label NOMBRE
-						input(id="txtName", type="text", placeholder="Ingrese su Nombre", readonly)
+						input(id="txtName", name="txtName", type="text", placeholder="Ingrese su Nombre", readonly)
 				.form_item(readonly="readonly")
 					fieldset
 						label APELLIDO
-						input(id="txtLastName", type="text", placeholder="Ingrese su Apellido", readonly)
+						input(id="txtLastName", name="txtLastName", type="text", placeholder="Ingrese su Apellido", readonly)
 				.form_item(readonly="readonly")
 					fieldset
 						label DIRECCION
-						input(id="txtAddress", type="text", placeholder="Ingrese su Dirección", readonly)
+						input(id="txtAddress", name="txtAddress", type="text", placeholder="Ingrese su Dirección", readonly)
 			.form_group
 				.form_item
 					fieldset.form_button
 						label RUC
-						input(type="text", placeholder="Ingrese su RUC", maxlength="11")
 						a(href="javascript:;", class="btn btn-search ladda-button", id="searchRUC", data-style="slide-down")
 							i.icon_search
+						input(id="txtRUC", name="txtRUC", type="text", placeholder="Ingrese su RUC", maxlength="11")
 				.form_item(readonly="readonly")
 					fieldset
 						label RAZON SOCIAL
-						input(type="text", placeholder="Ingrese su Razón Social", readonly)
+						input(id="txtCompanyName", name="txtCompanyName", type="text", placeholder="Ingrese su Razón Social", readonly)
+				.form_item(readonly="readonly")
+					fieldset
+						label DIRECCION
+						input(id="txtCompanyAddress", name="txtCompanyAddress", type="text", placeholder="Ingrese su Dirección", readonly)
 		section.form_section
 			.form_group
 				.form_item
@@ -53,11 +57,11 @@ block content
 				.form_item
 					fieldset
 						label FECHA INICIAL
-						input(type="text", id="toDate", placeholder="Ingrese su Razón Social")
+						input(type="text", id="toDate", placeholder="Ingrese la Fecha Inicial")
 				.form_item
 					fieldset
 						label FECHA FINAL
-						input(type="text", id="fromDate", placeholder="Ingrese su Razón Social")
+						input(type="text", id="fromDate", placeholder="Ingrese su Fecha Final")
 		section.form_section
 			.form_button
 				a(href="javascript:;", class="btn btn-add ladda-button left", data-style="slide-down") Agregar +
@@ -78,3 +82,4 @@ block content
 				| Precio Final S/. <span id="finalPrice">0.00</span>
 			.form_button
 				a(href="javascript:;", class="btn btn-save ladda-button", data-style="slide-down")	Guardar Solicitud
+				input(type="submit", value="testing")

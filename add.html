@@ -21,53 +21,59 @@
     <section>
       <div class="options_container">
         <ul>
-          <li> <a href="add.html">Registrar Nuevo Registro</a></li>
-          <li> <a href="list.html">Consultar de Registro</a></li>
+          <li> <a href="add.html">Nuevo Registro</a></li>
+          <li> <a href="list.html">Consultar Registro</a></li>
           <li> <a href="aprobe.html">Aprobar Registro</a></li>
         </ul>
       </div>
       <div class="main_menu">
         <h1>Registro</h1>
         <p>Ingrese la información del solicitante</p>
-        <form class="form_type1">
+        <form id="form_register" class="form_type1">
           <section class="form_section">
             <div class="form_group">
               <div class="form_item">
                 <fieldset class="form_button">
-                  <label>DNI</label>
-                  <input id="txtDNI" type="text" placeholder="Ingrese su DNI" maxlength="8"><a href="javascript:;" id="searchDNI" data-style="slide-down" class="btn btn-search ladda-button"><i class="icon_search"></i></a>
+                  <label>DNI</label><a href="javascript:;" id="searchDNI" data-style="slide-down" class="btn btn-search ladda-button"><i class="icon_search"></i></a>
+                  <input id="txtDNI" name="txtDNI" type="text" placeholder="Ingrese su DNI" maxlength="8">
                 </fieldset>
               </div>
               <div readonly="readonly" class="form_item">
                 <fieldset>
                   <label>NOMBRE</label>
-                  <input id="txtName" type="text" placeholder="Ingrese su Nombre" readonly>
+                  <input id="txtName" name="txtName" type="text" placeholder="Ingrese su Nombre" readonly>
                 </fieldset>
               </div>
               <div readonly="readonly" class="form_item">
                 <fieldset>
                   <label>APELLIDO</label>
-                  <input id="txtLastName" type="text" placeholder="Ingrese su Apellido" readonly>
+                  <input id="txtLastName" name="txtLastName" type="text" placeholder="Ingrese su Apellido" readonly>
                 </fieldset>
               </div>
               <div readonly="readonly" class="form_item">
                 <fieldset>
                   <label>DIRECCION</label>
-                  <input id="txtAddress" type="text" placeholder="Ingrese su Dirección" readonly>
+                  <input id="txtAddress" name="txtAddress" type="text" placeholder="Ingrese su Dirección" readonly>
                 </fieldset>
               </div>
             </div>
             <div class="form_group">
               <div class="form_item">
                 <fieldset class="form_button">
-                  <label>RUC</label>
-                  <input type="text" placeholder="Ingrese su RUC" maxlength="11"><a href="javascript:;" id="searchRUC" data-style="slide-down" class="btn btn-search ladda-button"><i class="icon_search"></i></a>
+                  <label>RUC</label><a href="javascript:;" id="searchRUC" data-style="slide-down" class="btn btn-search ladda-button"><i class="icon_search"></i></a>
+                  <input id="txtRUC" name="txtRUC" type="text" placeholder="Ingrese su RUC" maxlength="11">
                 </fieldset>
               </div>
               <div readonly="readonly" class="form_item">
                 <fieldset>
                   <label>RAZON SOCIAL</label>
-                  <input type="text" placeholder="Ingrese su Razón Social" readonly>
+                  <input id="txtCompanyName" name="txtCompanyName" type="text" placeholder="Ingrese su Razón Social" readonly>
+                </fieldset>
+              </div>
+              <div readonly="readonly" class="form_item">
+                <fieldset>
+                  <label>DIRECCION</label>
+                  <input id="txtCompanyAddress" name="txtCompanyAddress" type="text" placeholder="Ingrese su Dirección" readonly>
                 </fieldset>
               </div>
             </div>
@@ -96,13 +102,13 @@
               <div class="form_item">
                 <fieldset>
                   <label>FECHA INICIAL</label>
-                  <input type="text" id="toDate" placeholder="Ingrese su Razón Social">
+                  <input type="text" id="toDate" placeholder="Ingrese la Fecha Inicial">
                 </fieldset>
               </div>
               <div class="form_item">
                 <fieldset>
                   <label>FECHA FINAL</label>
-                  <input type="text" id="fromDate" placeholder="Ingrese su Razón Social">
+                  <input type="text" id="fromDate" placeholder="Ingrese su Fecha Final">
                 </fieldset>
               </div>
             </div>
@@ -127,7 +133,9 @@
           </section>
           <section class="form_section">
             <label class="finalPriceBox">Precio Final S/. <span id="finalPrice">0.00</span></label>
-            <div class="form_button"><a href="javascript:;" data-style="slide-down" class="btn btn-save ladda-button">	Guardar Solicitud</a></div>
+            <div class="form_button"><a href="javascript:;" data-style="slide-down" class="btn btn-save ladda-button">	Guardar Solicitud</a>
+              <input type="submit" value="testing">
+            </div>
           </section>
         </form>
       </div>
@@ -142,6 +150,8 @@
     <script src="libs/ladda.jquery.js"></script>
     <script src="libs/jquery.dataTables.js"></script>
     <script src="libs/jquery.dataTablesBootstrap.js"></script>
+    <script src="libs/jquery.validate.js"></script>
+    <script src="libs/messages_es.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
