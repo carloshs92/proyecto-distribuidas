@@ -269,9 +269,77 @@
 			return
 		init()
 		return
+
+	fnGetHeavyMachinery = ->
+		dom = {}
+		st =
+			urlMachinaries : 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/codigomaquinaria'
+			urlPrices : 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/obtenerprecio/'
+			select : '#heavyMachinery'
+			currentPrice : '#txtCurrentPrice'
+		catchDom = ->
+			dom.select = $(st.select)
+			dom.currentPrice = $(st.currentPrice)
+			return
+		suscribeEvents = ->
+			dom.select.on 'change', events.getPrice
+			return
+		afterCatchDom = ->
+			$.ajax(
+				url 		: "#{st.urlMachinaries}"
+				crossDomain : true
+				type		: "GET"
+				dataType 	: "json"
+			).done((data)->
+				options = "<option>--------- Seleccione ---------</option>"
+				if data.length > 0
+					$.each(data, (index, value)->
+						options += "<option value='#{value.codigo}'>#{value.nombreMaquinaria}</option>"
+						return
+						)
+					dom.select.html(options)
+					suscribeEvents()
+				else
+					alert('No hay maquinarias')
+				return
+			).always((data)->
+				return
+			).fail((jqXHR, textStatus, errorThrown)->
+				afterCatchDom()
+				return
+			)
+			return
+		events =
+			getPrice : (e) ->
+				dom.currentPrice.val("")
+				dom.currentPrice.data("perhour", "")
+				codigo = dom.select.val()
+				$.ajax(
+					url 		: "#{st.urlPrices}#{codigo}"
+					crossDomain : true
+					type		: "GET"
+					dataType 	: "json"
+				).done((data)->
+					dom.currentPrice.val("S/. #{data.precio}")
+					dom.currentPrice.data("perhour", data.precio)
+					return
+				).always((data)->
+					return
+				).fail((jqXHR, textStatus, errorThrown)->
+					return
+				)
+				return
+		init = ->
+			catchDom()
+			afterCatchDom()
+			return
+		init()
+		return
+		return
 	fnLoadingButtons()
 	fnRangeCalendar()
 	fnGetSchedule()
+	fnGetHeavyMachinery()
 	fnActiveCalendar()
 	fnInitTable()
 	fnSearchDNI()

@@ -1,6 +1,6 @@
 (function() {
   (function() {
-    var fnActiveCalendar, fnGetSchedule, fnInitTable, fnLoadingButtons, fnRangeCalendar, fnSearchDNI, fnSearchRUC, fnValidate;
+    var fnActiveCalendar, fnGetHeavyMachinery, fnGetSchedule, fnInitTable, fnLoadingButtons, fnRangeCalendar, fnSearchDNI, fnSearchRUC, fnValidate;
     fnActiveCalendar = function() {
       var afterCatchDom, catchDom, dom, init, st;
       dom = {};
@@ -294,9 +294,72 @@
       };
       init();
     };
+    fnGetHeavyMachinery = function() {
+      var afterCatchDom, catchDom, dom, events, init, st, suscribeEvents;
+      dom = {};
+      st = {
+        urlMachinaries: 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/codigomaquinaria',
+        urlPrices: 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/obtenerprecio/',
+        select: '#heavyMachinery',
+        currentPrice: '#txtCurrentPrice'
+      };
+      catchDom = function() {
+        dom.select = $(st.select);
+        dom.currentPrice = $(st.currentPrice);
+      };
+      suscribeEvents = function() {
+        dom.select.on('change', events.getPrice);
+      };
+      afterCatchDom = function() {
+        $.ajax({
+          url: "" + st.urlMachinaries,
+          crossDomain: true,
+          type: "GET",
+          dataType: "json"
+        }).done(function(data) {
+          var options;
+          options = "<option>--------- Seleccione ---------</option>";
+          if (data.length > 0) {
+            $.each(data, function(index, value) {
+              options += "<option value='" + value.codigo + "'>" + value.nombreMaquinaria + "</option>";
+            });
+            dom.select.html(options);
+            suscribeEvents();
+          } else {
+            alert('No hay maquinarias');
+          }
+        }).always(function(data) {}).fail(function(jqXHR, textStatus, errorThrown) {
+          afterCatchDom();
+        });
+      };
+      events = {
+        getPrice: function(e) {
+          var codigo;
+          dom.currentPrice.val("");
+          dom.currentPrice.data("perhour", "");
+          codigo = dom.select.val();
+          $.ajax({
+            url: "" + st.urlPrices + codigo,
+            crossDomain: true,
+            type: "GET",
+            dataType: "json"
+          }).done(function(data) {
+            dom.currentPrice.val("S/. " + data.precio);
+            dom.currentPrice.data("perhour", data.precio);
+          }).always(function(data) {}).fail(function(jqXHR, textStatus, errorThrown) {});
+        }
+      };
+      init = function() {
+        catchDom();
+        afterCatchDom();
+      };
+      init();
+      return;
+    };
     fnLoadingButtons();
     fnRangeCalendar();
     fnGetSchedule();
+    fnGetHeavyMachinery();
     fnActiveCalendar();
     fnInitTable();
     fnSearchDNI();
