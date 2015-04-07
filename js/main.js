@@ -1,6 +1,6 @@
 (function() {
   (function() {
-    var fnActiveCalendar, fnGetHeavyMachinery, fnGetSchedule, fnInitTable, fnLoadingButtons, fnRangeCalendar, fnSearchDNI, fnSearchRUC, fnValidate;
+    var fnActiveCalendar, fnAddHeavyMachinery, fnGetHeavyMachinery, fnGetSchedule, fnInitTable, fnLoadingButtons, fnRangeCalendar, fnSearchDNI, fnSearchRUC, fnValidate;
     fnActiveCalendar = function() {
       var afterCatchDom, catchDom, dom, init, st;
       dom = {};
@@ -69,7 +69,7 @@
         dom.toDate.datepicker({
           changeMonth: true,
           changeYear: true,
-          dateFormat: 'dd-mm-yy',
+          dateFormat: 'dd/mm/yy',
           maxDate: "+2Y",
           minDate: 0,
           numberOfMonths: 3,
@@ -80,7 +80,7 @@
         dom.fromDate.datepicker({
           changeMonth: true,
           changeYear: true,
-          dateFormat: 'dd-mm-yy',
+          dateFormat: 'dd/mm/yy',
           maxDate: "+2Y",
           minDate: 0,
           numberOfMonths: 3,
@@ -298,6 +298,7 @@
       var afterCatchDom, catchDom, dom, events, init, st, suscribeEvents;
       dom = {};
       st = {
+        btnAdd: '#btnAddMachinery',
         urlMachinaries: 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/codigomaquinaria',
         urlPrices: 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/obtenerprecio/',
         select: '#heavyMachinery',
@@ -306,6 +307,7 @@
       catchDom = function() {
         dom.select = $(st.select);
         dom.currentPrice = $(st.currentPrice);
+        dom.btnAdd = $(st.btnAdd);
       };
       suscribeEvents = function() {
         dom.select.on('change', events.getPrice);
@@ -318,7 +320,7 @@
           dataType: "json"
         }).done(function(data) {
           var options;
-          options = "<option>--------- Seleccione ---------</option>";
+          options = "<option value=''>--------- Seleccione ---------</option>";
           if (data.length > 0) {
             $.each(data, function(index, value) {
               options += "<option value='" + value.codigo + "'>" + value.nombreMaquinaria + "</option>";
@@ -337,6 +339,8 @@
           var codigo;
           dom.currentPrice.val("");
           dom.currentPrice.data("perhour", "");
+          dom.btnAdd.attr('disabled', 'disabled');
+          dom.btnAdd.attr('data-loading', '');
           codigo = dom.select.val();
           $.ajax({
             url: "" + st.urlPrices + codigo,
@@ -346,7 +350,10 @@
           }).done(function(data) {
             dom.currentPrice.val("S/. " + data.precio);
             dom.currentPrice.data("perhour", data.precio);
-          }).always(function(data) {}).fail(function(jqXHR, textStatus, errorThrown) {});
+          }).always(function(data) {
+            dom.btnAdd.removeAttr('disabled');
+            dom.btnAdd.removeAttr('data-loading');
+          }).fail(function(jqXHR, textStatus, errorThrown) {});
         }
       };
       init = function() {
@@ -354,8 +361,79 @@
         afterCatchDom();
       };
       init();
-      return;
     };
+    fnAddHeavyMachinery = function() {
+      var catchDom, dom, events, functions, init, st, suscribeEvents;
+      dom = {};
+      st = {
+        btnAdd: '#btnAddMachinery',
+        selMachinery: '#heavyMachinery',
+        txtPrice: '#txtCurrentPrice',
+        toDate: '#toDate',
+        fromDate: '#fromDate',
+        container: '.heavyMachineryItems',
+        items: '.heavyMachinerySelected'
+      };
+      catchDom = function() {
+        dom.btnAdd = $(st.btnAdd);
+        dom.selMachinery = $(st.selMachinery);
+        dom.txtPrice = $(st.txtPrice);
+        dom.toDate = $(st.toDate);
+        dom.fromDate = $(st.fromDate);
+        dom.container = $(st.container);
+      };
+      suscribeEvents = function() {
+        dom.btnAdd.on('click', events.eAddMachinery);
+      };
+      events = {
+        eAddMachinery: function(e) {
+          e.preventDefault();
+          if (functions.isValid()) {
+            functions.drawItem();
+            functions.cleanForm();
+          } else {
+            alert('Ingrese los datos de la maquinaria correctamente');
+          }
+          setTimeout(function() {
+            dom.btnAdd.removeAttr('disabled');
+            dom.btnAdd.removeAttr('data-loading');
+          }, 50);
+        }
+      };
+      functions = {
+        drawItem: function() {
+          var html;
+          html = "<div class='heavyMachinerySelected'><div data-machinery='" + (dom.selMachinery.val()) + "' class='heavyMachineryName'>" + (dom.selMachinery.find('option:selected').html()) + "</div><div class='heavyMachineryDate'>" + (dom.toDate.val()) + " - " + (dom.fromDate.val()) + "</div><div class='heavyMachineryDelete'>X</div></div>";
+          dom.container.append(html);
+        },
+        cleanForm: function() {
+          dom.txtPrice.val('');
+          dom.toDate.val('');
+          dom.fromDate.val('');
+          dom.selMachinery.val('');
+        },
+        isValid: function() {
+          var machinery, result;
+          result = true;
+          machinery = dom.selMachinery.val();
+          if (dom.selMachinery.val() === '') {
+            result = false;
+          }
+          $(st.items).each(function(index, element) {
+            if (dom.selMachinery.find('option:selected').html() === $(element).find('.heavyMachineryName').html()) {
+              result = false;
+            }
+          });
+          return result;
+        }
+      };
+      init = function() {
+        catchDom();
+        suscribeEvents();
+      };
+      init();
+    };
+    fnAddHeavyMachinery();
     fnLoadingButtons();
     fnRangeCalendar();
     fnGetSchedule();

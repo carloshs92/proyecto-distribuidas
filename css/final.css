@@ -246,6 +246,7 @@ a {
   line-height: 40px;
 }
 .form_button .btn.btn-save:hover {
+  color: #fff;
   background: #26a2e0;
 }
 .form_button .btn.btn-add {
@@ -255,6 +256,7 @@ a {
   line-height: 35px;
 }
 .form_button .btn.btn-add:hover {
+  color: #fff;
   background: #0f6332;
 }
 .form_button .btn.left {

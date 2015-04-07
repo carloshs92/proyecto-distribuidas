@@ -62,7 +62,7 @@
 			dom.toDate.datepicker(
 				changeMonth: true
 				changeYear: true
-				dateFormat: 'dd-mm-yy'
+				dateFormat: 'dd/mm/yy'
 				maxDate: "+2Y"
 				minDate: 0
 				numberOfMonths: 3
@@ -73,7 +73,7 @@
 			dom.fromDate.datepicker(
 				changeMonth: true
 				changeYear: true
-				dateFormat: 'dd-mm-yy'
+				dateFormat: 'dd/mm/yy'
 				maxDate: "+2Y"
 				minDate: 0
 				numberOfMonths: 3
@@ -273,6 +273,7 @@
 	fnGetHeavyMachinery = ->
 		dom = {}
 		st =
+			btnAdd		: '#btnAddMachinery'
 			urlMachinaries : 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/codigomaquinaria'
 			urlPrices : 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/obtenerprecio/'
 			select : '#heavyMachinery'
@@ -280,6 +281,7 @@
 		catchDom = ->
 			dom.select = $(st.select)
 			dom.currentPrice = $(st.currentPrice)
+			dom.btnAdd = $(st.btnAdd)
 			return
 		suscribeEvents = ->
 			dom.select.on 'change', events.getPrice
@@ -291,7 +293,7 @@
 				type		: "GET"
 				dataType 	: "json"
 			).done((data)->
-				options = "<option>--------- Seleccione ---------</option>"
+				options = "<option value=''>--------- Seleccione ---------</option>"
 				if data.length > 0
 					$.each(data, (index, value)->
 						options += "<option value='#{value.codigo}'>#{value.nombreMaquinaria}</option>"
@@ -313,6 +315,8 @@
 			getPrice : (e) ->
 				dom.currentPrice.val("")
 				dom.currentPrice.data("perhour", "")
+				dom.btnAdd.attr('disabled', 'disabled')
+				dom.btnAdd.attr('data-loading', '')
 				codigo = dom.select.val()
 				$.ajax(
 					url 		: "#{st.urlPrices}#{codigo}"
@@ -324,6 +328,8 @@
 					dom.currentPrice.data("perhour", data.precio)
 					return
 				).always((data)->
+					dom.btnAdd.removeAttr('disabled')
+					dom.btnAdd.removeAttr('data-loading')
 					return
 				).fail((jqXHR, textStatus, errorThrown)->
 					return
@@ -335,7 +341,73 @@
 			return
 		init()
 		return
+	fnAddHeavyMachinery = ->
+		dom = {}
+		st =
+			btnAdd		: '#btnAddMachinery'
+			selMachinery: '#heavyMachinery'
+			txtPrice	: '#txtCurrentPrice'
+			toDate		: '#toDate'
+			fromDate	: '#fromDate'
+			container	: '.heavyMachineryItems'
+			items : '.heavyMachinerySelected'
+
+		catchDom = ->
+			dom.btnAdd 		= $(st.btnAdd)
+			dom.selMachinery= $(st.selMachinery)
+			dom.txtPrice 	= $(st.txtPrice)
+			dom.toDate	 	= $(st.toDate)
+			dom.fromDate	= $(st.fromDate)
+			dom.container	= $(st.container)
+			return
+		suscribeEvents = ->
+			dom.btnAdd.on 'click', events.eAddMachinery
+			return
+		events = 
+			eAddMachinery: (e) ->
+				e.preventDefault()
+				if functions.isValid()
+					functions.drawItem()
+					functions.cleanForm()
+				else
+					alert('Ingrese los datos de la maquinaria correctamente')
+				setTimeout(->
+						dom.btnAdd.removeAttr('disabled')
+						dom.btnAdd.removeAttr('data-loading')
+						return
+					, 50)
+				return
+		functions =
+			drawItem : () ->
+				html = "<div class='heavyMachinerySelected'><div data-machinery='#{dom.selMachinery.val()}' class='heavyMachineryName'>#{dom.selMachinery.find('option:selected').html()}</div><div class='heavyMachineryDate'>#{dom.toDate.val()} - #{dom.fromDate.val()}</div><div class='heavyMachineryDelete'>X</div></div>"
+				dom.container.append(html)
+				return
+			cleanForm : () ->
+				dom.txtPrice.val('')
+				dom.toDate.val('')
+				dom.fromDate.val('')
+				dom.selMachinery.val('')
+				return
+			isValid : () ->
+				result = true
+				machinery =  dom.selMachinery.val()
+				if dom.selMachinery.val() == ''
+					result = false
+				$(st.items).each((index, element)->
+					if dom.selMachinery.find('option:selected').html() == $(element).find('.heavyMachineryName').html()
+						result = false
+					return
+				)
+				
+				return result
+		init = ->
+			catchDom()
+			suscribeEvents()
+			return
+		init()
 		return
+
+	fnAddHeavyMachinery()
 	fnLoadingButtons()
 	fnRangeCalendar()
 	fnGetSchedule()
