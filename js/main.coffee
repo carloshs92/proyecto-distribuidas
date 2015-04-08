@@ -1,53 +1,6 @@
 (->
-	fnActiveCalendar = ->
-		dom = {}
-		st =
-			container : '#calendar'
-			events : [
-				{
-					title: 'Event1'
-					start: '2015-03-30'
-					end: '2015-04-15'
-				},
-				{
-					title: 'Event2'
-					start: '2015-05-01'
-					end: '2015-05-15'
-				},
-			]
-		catchDom = ->
-			dom.container = $(st.container)
-			return
-		afterCatchDom = ->
-			dom.container.fullCalendar
-				lang: 'es'
-				defaultView: 'month'
-				eventSources: [
-					events	 : st.events
-					color	 : '#26A2E0'
-					textColor:'white'
-				]
-			return
-		init = ->
-			catchDom()
-			afterCatchDom()
-			return
-		init()
-		return
-
-	fnGetSchedule = ->
-		dom = {}
-		st =
-			select : '#heavyMachinery'
-		catchDom = ->
-			dom.select = $(st.select)
-			return
-
-		init = ->
-			catchDom()
-			return
-		init()
-		return
+	globals =
+		schedule : ''
 
 	fnRangeCalendar = ->
 		dom = {}
@@ -278,6 +231,8 @@
 			urlPrices : 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/obtenerprecio/'
 			select : '#heavyMachinery'
 			currentPrice : '#txtCurrentPrice'
+			calendar : '#calendar'
+			urlSchedule : 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/obtenerfechas/'
 		catchDom = ->
 			dom.select = $(st.select)
 			dom.currentPrice = $(st.currentPrice)
@@ -326,15 +281,58 @@
 				).done((data)->
 					dom.currentPrice.val("S/. #{data.precio}")
 					dom.currentPrice.data("perhour", data.precio)
+					$(st.calendar).fullCalendar('destroy')
+					globals.schedule = ''
+					$.ajax(
+						url 		: "#{st.urlSchedule}#{codigo}"
+						crossDomain : true
+						type		: "GET"
+						dataType 	: "json"
+					).done((data)->
+						if data != ''
+							globals.schedule = data.eventos
+							$(st.calendar).fullCalendar
+								lang: 'es'
+								defaultView: 'month'
+								eventSources: [
+									events	 : data.eventos
+									color	 : '#26A2E0'
+									textColor:'white'
+								]
+						return
+					).always((data)->
+						dom.btnAdd.removeAttr('disabled')
+						dom.btnAdd.removeAttr('data-loading')
+						return
+					).fail((jqXHR, textStatus, errorThrown)->
+						return
+					)
 					return
 				).always((data)->
-					dom.btnAdd.removeAttr('disabled')
-					dom.btnAdd.removeAttr('data-loading')
 					return
 				).fail((jqXHR, textStatus, errorThrown)->
 					return
 				)
 				return
+		init = ->
+			catchDom()
+			afterCatchDom()
+			return
+		init()
+		return
+	fnActiveCalendar = ->
+		dom = {}
+		st =
+			container : '#calendar'
+			
+		catchDom = ->
+			dom.container = $(st.container)
+			return
+		afterCatchDom = ->
+			dom.container.fullCalendar
+				lang: 'es'
+				defaultView: 'month'
+			return
 		init = ->
 			catchDom()
 			afterCatchDom()
@@ -362,6 +360,7 @@
 			return
 		suscribeEvents = ->
 			dom.btnAdd.on 'click', events.eAddMachinery
+			dom.container.on 'click', '.heavyMachineryDelete', events.eDeleteItem
 			return
 		events = 
 			eAddMachinery: (e) ->
@@ -376,6 +375,9 @@
 						dom.btnAdd.removeAttr('data-loading')
 						return
 					, 50)
+				return
+			eDeleteItem: (e) ->
+				$(@).parent().remove()
 				return
 		functions =
 			drawItem : () ->
@@ -398,7 +400,19 @@
 						result = false
 					return
 				)
-				
+				if globals.schedule != ''
+					#toDate = $.datepicker.formatDate( "dd/mm/yy", dom.toDate.val())
+					#fromDate = $.datepicker.formatDate( "dd/mm/yy", dom.fromDate.val())
+					toDate = moment(dom.toDate.val()).format('dd/mm/yy');
+					fromDate = moment(dom.fromDate.val()).format('dd/mm/yy');
+					$.each(globals.schedule, (index, element)->
+						start = moment( element.start).format('yy-mm-dd');
+						end = moment( element.end).format('yy-mm-dd');
+						if start < fromDate and fromDate < end
+							result = false
+						else if start < toDate and toDate < end
+							result = false
+						return)
 				return result
 		init = ->
 			catchDom()
@@ -410,9 +424,8 @@
 	fnAddHeavyMachinery()
 	fnLoadingButtons()
 	fnRangeCalendar()
-	fnGetSchedule()
 	fnGetHeavyMachinery()
-	fnActiveCalendar()
+	#fnActiveCalendar()
 	fnInitTable()
 	fnSearchDNI()
 	fnSearchRUC()

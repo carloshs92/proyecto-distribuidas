@@ -1,58 +1,8 @@
 (function() {
   (function() {
-    var fnActiveCalendar, fnAddHeavyMachinery, fnGetHeavyMachinery, fnGetSchedule, fnInitTable, fnLoadingButtons, fnRangeCalendar, fnSearchDNI, fnSearchRUC, fnValidate;
-    fnActiveCalendar = function() {
-      var afterCatchDom, catchDom, dom, init, st;
-      dom = {};
-      st = {
-        container: '#calendar',
-        events: [
-          {
-            title: 'Event1',
-            start: '2015-03-30',
-            end: '2015-04-15'
-          }, {
-            title: 'Event2',
-            start: '2015-05-01',
-            end: '2015-05-15'
-          }
-        ]
-      };
-      catchDom = function() {
-        dom.container = $(st.container);
-      };
-      afterCatchDom = function() {
-        dom.container.fullCalendar({
-          lang: 'es',
-          defaultView: 'month',
-          eventSources: [
-            {
-              events: st.events,
-              color: '#26A2E0',
-              textColor: 'white'
-            }
-          ]
-        });
-      };
-      init = function() {
-        catchDom();
-        afterCatchDom();
-      };
-      init();
-    };
-    fnGetSchedule = function() {
-      var catchDom, dom, init, st;
-      dom = {};
-      st = {
-        select: '#heavyMachinery'
-      };
-      catchDom = function() {
-        dom.select = $(st.select);
-      };
-      init = function() {
-        catchDom();
-      };
-      init();
+    var fnActiveCalendar, fnAddHeavyMachinery, fnGetHeavyMachinery, fnInitTable, fnLoadingButtons, fnRangeCalendar, fnSearchDNI, fnSearchRUC, fnValidate, globals;
+    globals = {
+      schedule: ''
     };
     fnRangeCalendar = function() {
       var afterCatchDom, catchDom, dom, init, st;
@@ -302,7 +252,9 @@
         urlMachinaries: 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/codigomaquinaria',
         urlPrices: 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/obtenerprecio/',
         select: '#heavyMachinery',
-        currentPrice: '#txtCurrentPrice'
+        currentPrice: '#txtCurrentPrice',
+        calendar: '#calendar',
+        urlSchedule: 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/obtenerfechas/'
       };
       catchDom = function() {
         dom.select = $(st.select);
@@ -350,11 +302,55 @@
           }).done(function(data) {
             dom.currentPrice.val("S/. " + data.precio);
             dom.currentPrice.data("perhour", data.precio);
-          }).always(function(data) {
-            dom.btnAdd.removeAttr('disabled');
-            dom.btnAdd.removeAttr('data-loading');
-          }).fail(function(jqXHR, textStatus, errorThrown) {});
+            $(st.calendar).fullCalendar('destroy');
+            globals.schedule = '';
+            $.ajax({
+              url: "" + st.urlSchedule + codigo,
+              crossDomain: true,
+              type: "GET",
+              dataType: "json"
+            }).done(function(data) {
+              if (data !== '') {
+                globals.schedule = data.eventos;
+                $(st.calendar).fullCalendar({
+                  lang: 'es',
+                  defaultView: 'month',
+                  eventSources: [
+                    {
+                      events: data.eventos,
+                      color: '#26A2E0',
+                      textColor: 'white'
+                    }
+                  ]
+                });
+              }
+            }).always(function(data) {
+              dom.btnAdd.removeAttr('disabled');
+              dom.btnAdd.removeAttr('data-loading');
+            }).fail(function(jqXHR, textStatus, errorThrown) {});
+          }).always(function(data) {}).fail(function(jqXHR, textStatus, errorThrown) {});
         }
+      };
+      init = function() {
+        catchDom();
+        afterCatchDom();
+      };
+      init();
+    };
+    fnActiveCalendar = function() {
+      var afterCatchDom, catchDom, dom, init, st;
+      dom = {};
+      st = {
+        container: '#calendar'
+      };
+      catchDom = function() {
+        dom.container = $(st.container);
+      };
+      afterCatchDom = function() {
+        dom.container.fullCalendar({
+          lang: 'es',
+          defaultView: 'month'
+        });
       };
       init = function() {
         catchDom();
@@ -384,6 +380,7 @@
       };
       suscribeEvents = function() {
         dom.btnAdd.on('click', events.eAddMachinery);
+        dom.container.on('click', '.heavyMachineryDelete', events.eDeleteItem);
       };
       events = {
         eAddMachinery: function(e) {
@@ -398,6 +395,9 @@
             dom.btnAdd.removeAttr('disabled');
             dom.btnAdd.removeAttr('data-loading');
           }, 50);
+        },
+        eDeleteItem: function(e) {
+          $(this).parent().remove();
         }
       };
       functions = {
@@ -413,7 +413,7 @@
           dom.selMachinery.val('');
         },
         isValid: function() {
-          var machinery, result;
+          var fromDate, machinery, result, toDate;
           result = true;
           machinery = dom.selMachinery.val();
           if (dom.selMachinery.val() === '') {
@@ -424,6 +424,20 @@
               result = false;
             }
           });
+          if (globals.schedule !== '') {
+            toDate = moment(dom.toDate.val()).format('dd/mm/yy');
+            fromDate = moment(dom.fromDate.val()).format('dd/mm/yy');
+            $.each(globals.schedule, function(index, element) {
+              var end, start;
+              start = moment(element.start).format('yy-mm-dd');
+              end = moment(element.end).format('yy-mm-dd');
+              if (start < fromDate && fromDate < end) {
+                result = false;
+              } else if (start < toDate && toDate < end) {
+                result = false;
+              }
+            });
+          }
           return result;
         }
       };
@@ -436,9 +450,7 @@
     fnAddHeavyMachinery();
     fnLoadingButtons();
     fnRangeCalendar();
-    fnGetSchedule();
     fnGetHeavyMachinery();
-    fnActiveCalendar();
     fnInitTable();
     fnSearchDNI();
     fnSearchRUC();
