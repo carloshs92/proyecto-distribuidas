@@ -257,12 +257,12 @@
       dom = {};
       st = {
         btnAdd: '#btnAddMachinery',
-        urlMachinaries: 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/codigomaquinaria',
-        urlPrices: 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/obtenerprecio/',
+        urlMachinaries: 'http://willyaguirre.me/maquinaria/api/codigomaquinaria',
+        urlPrices: 'http://willyaguirre.me/maquinaria/api/obtenerprecio/',
         select: '#heavyMachinery',
         currentPrice: '#txtCurrentPrice',
         calendar: '#calendar',
-        urlSchedule: 'http://willyaguirre.me/RestMaquinaria/api/Maquinaria/obtenerfechas/'
+        urlSchedule: 'http://willyaguirre.me/maquinaria/api/obtenerfechas/'
       };
       catchDom = function() {
         dom.select = $(st.select);
