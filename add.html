@@ -29,7 +29,7 @@
       <div class="main_menu">
         <h1>Registro</h1>
         <p>Ingrese la información del solicitante</p>
-        <form id="form_register" method="POST" class="form_type1">
+        <form  action="publishmq.php" id="form_register" method="POST" class="form_type1">
           <section class="form_section">
             <div class="form_group">
               <div class="form_item">
@@ -118,6 +118,9 @@
           <section class="form_section submit_button">
             <label class="finalPriceBox">Precio Final S/. <span class="finalPriceHTML">0.00</span></label>
             <input type="hidden" name="finalPrice" value="0.00" id="finalPrice">
+            <input type="hidden" name="codeMaq" id="codeMaq">
+            <input type="hidden" name="dateStartTxt" id="dateStartTxt">
+            <input type="hidden" name="dateFinishTxt" id="dateFinishTxt">
             <div class="form_button">
               <button type="submit" class="btn btn-save">	Guardar Solicitud</button>
             </div>
