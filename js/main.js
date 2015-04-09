@@ -378,7 +378,10 @@
         fromDate: '#fromDate',
         container: '.heavyMachineryItems',
         finalPriceHTML: '.finalPriceHTML',
-        items: '.heavyMachinerySelected'
+        items: '.heavyMachinerySelected',
+        codeMaq: "#codeMaq",
+        dateStartTxt: "#dateStartTxt",
+        dateFinishTxt: "#dateFinishTxt"
       };
       catchDom = function() {
         dom.btnAdd = $(st.btnAdd);
@@ -389,6 +392,9 @@
         dom.container = $(st.container);
         dom.finalPrice = $(st.finalPrice);
         dom.finalPriceHTML = $(st.finalPriceHTML);
+        dom.codeMaq = $(st.codeMaq);
+        dom.dateStartTxt =$(st.dateStartTxt);
+        dom.dateFinishTxt =$(st.dateFinishTxt);
       };
       suscribeEvents = function() {
         dom.btnAdd.on('click', events.eAddMachinery);
@@ -420,7 +426,7 @@
       };
       functions = {
         drawItem: function() {
-          var cost, currentPrice, diffTime, finalCost, fromDate, hours, html, toDate;
+          var cost, currentPrice, diffTime, finalCost, fromDate, hours, html, toDate, start;
           cost = parseFloat(dom.txtPrice.attr('data-perhour'));
           fromDate = $.datepicker.parseDate('dd/mm/yy', dom.fromDate.val());
           toDate = $.datepicker.parseDate('dd/mm/yy', dom.toDate.val());
@@ -432,6 +438,9 @@
           currentPrice = parseFloat(dom.finalPriceHTML.html()) + finalCost;
           dom.finalPriceHTML.html(currentPrice);
           dom.finalPrice.val(currentPrice);
+          dom.codeMaq.val(dom.selMachinery.val());
+          dom.dateStartTxt.val( $("#fromDate").val() ) ;
+          dom.dateFinishTxt.val( $("#toDate").val() );
         },
         cleanForm: function() {
           dom.txtPrice.val('');
