@@ -49,7 +49,7 @@
       var afterCatchDom, catchDom, dom, init, st;
       dom = {};
       st = {
-        buttons: '.btn'
+        buttons: '.btn-search, .btn-add'
       };
       catchDom = function() {
         dom.buttons = $(st.buttons);
@@ -90,7 +90,6 @@
         button: "#searchDNI",
         txtDNI: "#txtDNI",
         txtName: '#txtName',
-        txtLastName: '#txtLastName',
         txtAddress: '#txtAddress',
         currentValue: null
       };
@@ -98,7 +97,6 @@
         dom.button = $(st.button);
         dom.txtDNI = $(st.txtDNI);
         dom.txtName = $(st.txtName);
-        dom.txtLastName = $(st.txtLastName);
         dom.txtAddress = $(st.txtAddress);
       };
       suscribeEvents = function() {
@@ -125,7 +123,6 @@
             if (data.length > 0) {
               obj = data[0];
               dom.txtName.val(obj.nombre_completo);
-              dom.txtLastName.val(obj.nombre_completo);
               dom.txtAddress.val(obj.direccion);
             } else {
               alert('DNI no encontrado');
@@ -138,7 +135,6 @@
         eCleanForm: function(e) {
           if ($(this).val() !== st.currentValue) {
             dom.txtName.val('');
-            dom.txtLastName.val('');
             dom.txtAddress.val('');
           }
         }
@@ -234,6 +230,18 @@
               minlength: 11,
               number: true,
               required: true
+            },
+            txtPhoneNumber: {
+              minlength: 7,
+              number: true,
+              required: true
+            }
+          },
+          submitHandler: function(form) {
+            if ($('.heavyMachinerySelected').length > 0) {
+              $(form).submit();
+            } else {
+              alert('Elija almenos una maquinaria pesada');
             }
           }
         });
@@ -301,7 +309,7 @@
             dataType: "json"
           }).done(function(data) {
             dom.currentPrice.val("S/. " + data.precio);
-            dom.currentPrice.data("perhour", data.precio);
+            dom.currentPrice.attr("data-perhour", data.precio);
             $(st.calendar).fullCalendar('destroy');
             globals.schedule = '';
             $.ajax({
@@ -362,12 +370,14 @@
       var catchDom, dom, events, functions, init, st, suscribeEvents;
       dom = {};
       st = {
+        finalPrice: '#finalPrice',
         btnAdd: '#btnAddMachinery',
         selMachinery: '#heavyMachinery',
         txtPrice: '#txtCurrentPrice',
         toDate: '#toDate',
         fromDate: '#fromDate',
         container: '.heavyMachineryItems',
+        finalPriceHTML: '.finalPriceHTML',
         items: '.heavyMachinerySelected'
       };
       catchDom = function() {
@@ -377,6 +387,8 @@
         dom.toDate = $(st.toDate);
         dom.fromDate = $(st.fromDate);
         dom.container = $(st.container);
+        dom.finalPrice = $(st.finalPrice);
+        dom.finalPriceHTML = $(st.finalPriceHTML);
       };
       suscribeEvents = function() {
         dom.btnAdd.on('click', events.eAddMachinery);
@@ -397,14 +409,29 @@
           }, 50);
         },
         eDeleteItem: function(e) {
+          var currentCost, newCost;
+          currentCost = parseFloat($(this).parent().find('.txtHeavyMachineryCost').val());
+          console.log(currentCost);
+          newCost = parseFloat(dom.finalPriceHTML.html()) - currentCost;
+          dom.finalPrice.val(newCost);
+          dom.finalPriceHTML.html(newCost);
           $(this).parent().remove();
         }
       };
       functions = {
         drawItem: function() {
-          var html;
-          html = "<div class='heavyMachinerySelected'><div data-machinery='" + (dom.selMachinery.val()) + "' class='heavyMachineryName'>" + (dom.selMachinery.find('option:selected').html()) + "</div><div class='heavyMachineryDate'>" + (dom.toDate.val()) + " - " + (dom.fromDate.val()) + "</div><div class='heavyMachineryDelete'>X</div></div>";
+          var cost, currentPrice, diffTime, finalCost, fromDate, hours, html, toDate;
+          cost = parseFloat(dom.txtPrice.attr('data-perhour'));
+          fromDate = $.datepicker.parseDate('dd/mm/yy', dom.fromDate.val());
+          toDate = $.datepicker.parseDate('dd/mm/yy', dom.toDate.val());
+          diffTime = Math.abs(fromDate.getTime() - toDate.getTime());
+          hours = Math.ceil(diffTime / (1000 * 3600));
+          finalCost = hours * cost;
+          html = "<div class='heavyMachinerySelected'> <div class='heavyMachineryName'> <input type='hidden' name='heavyMachineryName[]' value='" + (dom.selMachinery.val()) + "'/> " + (dom.selMachinery.find('option:selected').html()) + " </div> <div class='heavyMachineryCost'> <input type='hidden' class='txtHeavyMachineryCost' name='heavyMachineryCost[]' value='" + finalCost + "'/> S/. " + finalCost + " </div> <div class='heavyMachineryDate'> <input type='hidden' name='toDate[]' value='" + (dom.toDate.val()) + "'/> <input type='hidden' name='fromDate[]' value='" + (dom.fromDate.val()) + "'/> " + (dom.toDate.val()) + " - " + (dom.fromDate.val()) + " </div> <div class='heavyMachineryDelete'>X</div> </div>";
           dom.container.append(html);
+          currentPrice = parseFloat(dom.finalPriceHTML.html()) + finalCost;
+          dom.finalPriceHTML.html(currentPrice);
+          dom.finalPrice.val(currentPrice);
         },
         cleanForm: function() {
           dom.txtPrice.val('');
@@ -418,19 +445,13 @@
           machinery = dom.selMachinery.val();
           if (dom.selMachinery.val() === '') {
             result = false;
-          }
-          $(st.items).each(function(index, element) {
-            if (dom.selMachinery.find('option:selected').html() === $(element).find('.heavyMachineryName').html()) {
-              result = false;
-            }
-          });
-          if (globals.schedule !== '') {
-            toDate = moment(dom.toDate.val()).format('dd/mm/yy');
-            fromDate = moment(dom.fromDate.val()).format('dd/mm/yy');
+          } else if (globals.schedule !== '') {
+            toDate = $.datepicker.parseDate("dd/mm/yy", dom.toDate.val());
+            fromDate = $.datepicker.parseDate("dd/mm/yy", dom.fromDate.val());
             $.each(globals.schedule, function(index, element) {
               var end, start;
-              start = moment(element.start).format('yy-mm-dd');
-              end = moment(element.end).format('yy-mm-dd');
+              start = $.datepicker.parseDate("yy-mm-dd", element.start);
+              end = $.datepicker.parseDate("yy-mm-dd", element.end);
               if (start < fromDate && fromDate < end) {
                 result = false;
               } else if (start < toDate && toDate < end) {
@@ -438,6 +459,11 @@
               }
             });
           }
+          $(st.items).each(function(index, element) {
+            if (dom.selMachinery.find('option:selected').html() === $(element).find('.heavyMachineryName').html()) {
+              result = false;
+            }
+          });
           return result;
         }
       };

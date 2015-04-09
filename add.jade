@@ -3,7 +3,7 @@ extends ./dashboard.jade
 block content
 	h1 Registro
 	p Ingrese la información del solicitante
-	form.form_type1#form_register
+	form.form_type1#form_register(method="POST")
 		section.form_section
 			.form_group
 				.form_item
@@ -14,16 +14,16 @@ block content
 						input(id="txtDNI", name="txtDNI", type="text", placeholder="Ingrese su DNI", maxlength="8")
 				.form_item(readonly="readonly")
 					fieldset
-						label NOMBRE
+						label NOMBRE COMPLETO
 						input(id="txtName", name="txtName", type="text", placeholder="Ingrese su Nombre", readonly)
-				.form_item(readonly="readonly")
-					fieldset
-						label APELLIDO
-						input(id="txtLastName", name="txtLastName", type="text", placeholder="Ingrese su Apellido", readonly)
 				.form_item(readonly="readonly")
 					fieldset
 						label DIRECCION
 						input(id="txtAddress", name="txtAddress", type="text", placeholder="Ingrese su Dirección", readonly)
+				.form_item
+					fieldset
+						label TELEFONO
+						input(id="txtPhoneNumber", name="txtPhoneNumber", type="text", placeholder="Ingrese su Telefono", maxlength=11)
 			.form_group
 				.form_item
 					fieldset.form_button
@@ -65,9 +65,9 @@ block content
 		section.form_section
 			#calendar
 		
-		section.form_section
+		section.form_section.submit_button
 			label.finalPriceBox
-				| Precio Final S/. <span id="finalPrice">0.00</span>
+				| Precio Final S/. <span class="finalPriceHTML">0.00</span>
+			input(type="hidden", name="finalPrice", value="0.00", id="finalPrice")
 			.form_button
-				a(href="javascript:;", class="btn btn-save ladda-button", data-style="slide-down")	Guardar Solicitud
-				input(type="submit", value="testing")
+				button(type="submit", class="btn btn-save")	Guardar Solicitud

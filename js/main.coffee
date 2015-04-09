@@ -46,7 +46,7 @@
 	fnLoadingButtons = ->
 		dom = {}
 		st =
-			buttons : '.btn'
+			buttons : '.btn-search, .btn-add'
 		catchDom = ->
 			dom.buttons = $(st.buttons)
 			return
@@ -83,14 +83,12 @@
 			button 	: "#searchDNI"
 			txtDNI 		: "#txtDNI"
 			txtName 	: '#txtName'
-			txtLastName : '#txtLastName'
 			txtAddress 	: '#txtAddress'
 			currentValue: null
 		catchDom = ->
 			dom.button = $(st.button)
 			dom.txtDNI 		= $(st.txtDNI)
 			dom.txtName 	= $(st.txtName)
-			dom.txtLastName = $(st.txtLastName)
 			dom.txtAddress 	= $(st.txtAddress)
 			return
 		suscribeEvents = ->
@@ -114,7 +112,6 @@
 					if data.length > 0
 						obj = data[0]
 						dom.txtName.val(obj.nombre_completo)
-						dom.txtLastName.val(obj.nombre_completo)
 						dom.txtAddress.val(obj.direccion)
 					else
 						alert('DNI no encontrado')
@@ -128,7 +125,6 @@
 			eCleanForm : (e)->
 				if $(@).val() != st.currentValue
 					dom.txtName.val('')
-					dom.txtLastName.val('')
 					dom.txtAddress.val('')
 				return
 		init = ->
@@ -214,6 +210,16 @@
 						minlength	: 11
 						number		: true
 						required	: true
+					txtPhoneNumber:
+						minlength 	: 7
+						number 		: true
+						required 	: true
+				submitHandler: (form) ->
+					if $('.heavyMachinerySelected').length > 0
+						$(form).submit()
+					else
+						alert('Elija almenos una maquinaria pesada')
+					return
 				)
 			return
 		init = ->
@@ -280,7 +286,7 @@
 					dataType 	: "json"
 				).done((data)->
 					dom.currentPrice.val("S/. #{data.precio}")
-					dom.currentPrice.data("perhour", data.precio)
+					dom.currentPrice.attr("data-perhour", data.precio)
 					$(st.calendar).fullCalendar('destroy')
 					globals.schedule = ''
 					$.ajax(
@@ -342,12 +348,14 @@
 	fnAddHeavyMachinery = ->
 		dom = {}
 		st =
+			finalPrice	: '#finalPrice'
 			btnAdd		: '#btnAddMachinery'
 			selMachinery: '#heavyMachinery'
 			txtPrice	: '#txtCurrentPrice'
 			toDate		: '#toDate'
 			fromDate	: '#fromDate'
 			container	: '.heavyMachineryItems'
+			finalPriceHTML: '.finalPriceHTML'
 			items : '.heavyMachinerySelected'
 
 		catchDom = ->
@@ -357,6 +365,8 @@
 			dom.toDate	 	= $(st.toDate)
 			dom.fromDate	= $(st.fromDate)
 			dom.container	= $(st.container)
+			dom.finalPrice	= $(st.finalPrice)
+			dom.finalPriceHTML= $(st.finalPriceHTML)
 			return
 		suscribeEvents = ->
 			dom.btnAdd.on 'click', events.eAddMachinery
@@ -377,12 +387,41 @@
 					, 50)
 				return
 			eDeleteItem: (e) ->
+				currentCost = parseFloat($(@).parent().find('.txtHeavyMachineryCost').val())
+				console.log currentCost
+				newCost = parseFloat(dom.finalPriceHTML.html()) - currentCost
+				dom.finalPrice.val(newCost)
+				dom.finalPriceHTML.html(newCost)
 				$(@).parent().remove()
 				return
 		functions =
 			drawItem : () ->
-				html = "<div class='heavyMachinerySelected'><div data-machinery='#{dom.selMachinery.val()}' class='heavyMachineryName'>#{dom.selMachinery.find('option:selected').html()}</div><div class='heavyMachineryDate'>#{dom.toDate.val()} - #{dom.fromDate.val()}</div><div class='heavyMachineryDelete'>X</div></div>"
+				cost = parseFloat(dom.txtPrice.attr('data-perhour'))
+				fromDate = $.datepicker.parseDate('dd/mm/yy', dom.fromDate.val())
+				toDate = $.datepicker.parseDate('dd/mm/yy', dom.toDate.val())
+				diffTime = Math.abs(fromDate.getTime() - toDate.getTime())
+				hours = Math.ceil(diffTime / (1000 * 3600 ))
+				finalCost = hours * cost
+				html = "<div class='heavyMachinerySelected'>
+							<div class='heavyMachineryName'>
+								<input type='hidden' name='heavyMachineryName[]' value='#{dom.selMachinery.val()}'/>
+								#{dom.selMachinery.find('option:selected').html()}
+							</div>
+							<div class='heavyMachineryCost'>
+								<input type='hidden' class='txtHeavyMachineryCost' name='heavyMachineryCost[]' value='#{finalCost}'/>
+								S/. #{finalCost}
+							</div>
+							<div class='heavyMachineryDate'>
+								<input type='hidden' name='toDate[]' value='#{dom.toDate.val()}'/>
+								<input type='hidden' name='fromDate[]' value='#{dom.fromDate.val()}'/>
+								#{dom.toDate.val()} - #{dom.fromDate.val()}
+							</div>
+							<div class='heavyMachineryDelete'>X</div>
+						</div>"
 				dom.container.append(html)
+				currentPrice = parseFloat(dom.finalPriceHTML.html())  + finalCost
+				dom.finalPriceHTML.html(currentPrice)
+				dom.finalPrice.val(currentPrice)
 				return
 			cleanForm : () ->
 				dom.txtPrice.val('')
@@ -394,25 +433,25 @@
 				result = true
 				machinery =  dom.selMachinery.val()
 				if dom.selMachinery.val() == ''
-					result = false
-				$(st.items).each((index, element)->
-					if dom.selMachinery.find('option:selected').html() == $(element).find('.heavyMachineryName').html()
-						result = false
-					return
-				)
-				if globals.schedule != ''
-					#toDate = $.datepicker.formatDate( "dd/mm/yy", dom.toDate.val())
-					#fromDate = $.datepicker.formatDate( "dd/mm/yy", dom.fromDate.val())
-					toDate = moment(dom.toDate.val()).format('dd/mm/yy');
-					fromDate = moment(dom.fromDate.val()).format('dd/mm/yy');
+					result = false				
+				else if globals.schedule != ''
+					toDate = $.datepicker.parseDate( "dd/mm/yy", dom.toDate.val())
+					fromDate = $.datepicker.parseDate( "dd/mm/yy", dom.fromDate.val())
+					#toDate = moment(dom.toDate.val()).format('dd/mm/yy');
+					#fromDate = moment(dom.fromDate.val()).format('dd/mm/yy');
 					$.each(globals.schedule, (index, element)->
-						start = moment( element.start).format('yy-mm-dd');
-						end = moment( element.end).format('yy-mm-dd');
+						start =  $.datepicker.parseDate( "yy-mm-dd", element.start)
+						end = $.datepicker.parseDate( "yy-mm-dd", element.end)
 						if start < fromDate and fromDate < end
 							result = false
 						else if start < toDate and toDate < end
 							result = false
 						return)
+				$(st.items).each((index, element)->
+					if dom.selMachinery.find('option:selected').html() == $(element).find('.heavyMachineryName').html()
+						result = false
+					return
+				)
 				return result
 		init = ->
 			catchDom()
